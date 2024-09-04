@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import Spinner from "../components/Spinner";
 import CardAnimes from "../components/CardAnimes";
-import BannerHead from "../components/bannerHead";
+import BannerHead from "../components/BannerHead";
 import useAnimeDetail from "../hooks/useAnimeDetail";
 import { IoIosArrowBack, IoIosArrowForward  } from "react-icons/io";
 
