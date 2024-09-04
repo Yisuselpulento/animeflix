@@ -6,7 +6,7 @@ import { CgPlayListAdd } from "react-icons/cg";
 import { formatDate } from "../helpers/formatDate";
 import { FaGithubAlt } from "react-icons/fa6";
 import CardAnimes from "../components/CardAnimes";
-import BannerHead from "../components/bannerHead";
+import BannerHead from "../components/BannerHead";
 import useAnimeDetail from "../hooks/useAnimeDetail";
 
 const AnimeDetail = () => {

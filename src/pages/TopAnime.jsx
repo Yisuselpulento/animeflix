@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { fetchAnimeTop } from "../services/AnimeFetching"
 import Spinner from "../components/Spinner";
 import CardTopAnime from "../components/CardTopAnime";
-import BannerHead from "../components/bannerHead";
+import BannerHead from "../components/BannerHead";
 
 const TopAnime = () => {
    const [animeTops, setAnimeTops] = useState([])
