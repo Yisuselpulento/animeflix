@@ -12,7 +12,6 @@ const TopAnime = () => {
     const getTopAnimes = async () => {
       setLoading(true); 
       const { animes } = await fetchAnimeTop();
-      console.log(animes);
       setAnimeTops(animes);
       setLoading(false);
     };

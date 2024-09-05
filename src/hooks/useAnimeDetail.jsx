@@ -17,15 +17,10 @@ const useAnimeDetail = (animeName) => {
 
   useEffect(() => {
     const getAnimeById = async () => {
-      try {
+      setLoading(true);
         const anime = await fetchAnimeById(animeName);
-        console.log(anime)
         setAnimeDetail(anime);
-      } catch (error) {
-        console.error("Error fetching anime details:", error);
-      } finally {
-        setLoading(false);
-      }
+        setLoading(false); 
     };
 
     getAnimeById();
@@ -33,28 +28,19 @@ const useAnimeDetail = (animeName) => {
 
   useEffect(() => {
     const getGenresAnime = async () => {
-      try {
         const genre = await fetchGenresAnime();
         console.log(genre)
-        setGenresAnime(genre.genre);
-      } catch (error) {
-        console.error("Error fetching genres:", error);
-      }
+        setGenresAnime(genre.genres);
     };
     getGenresAnime();
   }, []);
 
   useEffect(() => {
     const getAnimesRandom = async () => {
-      try {
         setLoadingRandom(true);
         const animes = await fetchMultipleRandomAnimes();
         setRandomAnimes(animes);
-      } catch (error) {
-        console.error("Error fetching random animes:", error);
-      } finally {
         setLoadingRandom(false);
-      }
     };
 
     getAnimesRandom();

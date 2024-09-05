@@ -118,9 +118,10 @@ const EpisodeDetail = () => {
                   <IoIosArrowBack className="text-lg font-bold" />
                   Anterior
                 </button>
-                <button
-                 className="bg-primary hover:bg-opacity-90 text-sm p-1 px-4"
-                >Info </button>
+                <Link
+                to={`/ver/${animeName}`}
+                 className="bg-primary hover:bg-opacity-90 text-sm p-1 px-4 flex items-center"
+                >Info </Link>
                 <button
                 className="bg-primary hover:bg-opacity-90 rounded-r-lg p-1 text-sm flex items-center px-2"
                   onClick={handleNext}
