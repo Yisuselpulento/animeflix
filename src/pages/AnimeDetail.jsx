@@ -108,7 +108,9 @@ const AnimeDetail = () => {
               <p>Genres:</p>
               <div className="flex gap-1 flex-wrap text-sm justify-center md:justify-start">
                 {genres?.map((genre, i) => (
-                  <p className="rounded-lg bg-primary p-1" key={i}>{genre}</p>
+                  <Link 
+                  to={`/search?genres=${genre.id}`}
+                  className="rounded-lg bg-primary p-1" key={i}>{genre.genre}</Link>
                 ))}
               </div>
             </div>
@@ -204,9 +206,10 @@ const AnimeDetail = () => {
           <BannerHead parrafe={"Tags"} />
           <div className="flex gap-1 flex-wrap justify-center md:justify-start">
             {genresAnime?.map(genre=> (
-              <p 
+              <Link 
+              to={`/search?genres=${genre.id}`}
               className="bg-primary rounded-lg p-1 text-sm"
-              key={genre.id}>{genre.name}</p>
+              key={genre.id}>{genre.name}</Link>
             ) )}
 
           </div>

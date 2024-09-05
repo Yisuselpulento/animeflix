@@ -25,7 +25,7 @@ const SearchResults = () => {
           <Spinner />
         </div>
       ) : (
-        <div className="flex gap-3 flex-wrap">
+        <div className="flex gap-3 flex-wrap items-center justify-center md:justify-start ">
           {results.length > 0 ? (
             results.map((anime, i) => (
               <CardAnimes key={i} anime={anime} />

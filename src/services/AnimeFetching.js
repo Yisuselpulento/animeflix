@@ -34,7 +34,6 @@ export const fetchAnimeById = async (id) => {
     ]);
     const animeData = animeResponse.data.data;
     const episodes = episodesResponse;
-
     const anime = {
       _id: animeData.mal_id,
       release: animeData.year,
@@ -46,7 +45,10 @@ export const fetchAnimeById = async (id) => {
       score: animeData.score,
       type: animeData.demographics.map(genre => genre.name),
       studios: animeData.studios.map(studio => studio.name),
-      genres: animeData.genres.map(genre => genre.name),
+      genres: animeData.genres.map(genre => ({
+        genre: genre.name,
+        id: genre.mal_id
+      })),
       episodes
     };
 
@@ -154,12 +156,12 @@ export const fetchAnimesRecomend = async () => {
   }
 };
 
-export const fetchSearchAnimeByName = async (animeName, genre = []) => {
+export const fetchSearchAnimeByName = async (animeName, genres) => {
   try {
     const {data} = await axios.get('https://api.jikan.moe/v4/anime', {
       params: {
         q: animeName, 
-        genre,
+        genres : genres.join(','),
         limit: 10,  
         page: 1     
       }

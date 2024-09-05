@@ -18,6 +18,7 @@ const useAnimeDetail = (animeName) => {
     const getAnimeById = async () => {
       setLoading(true);
         const anime = await fetchAnimeById(animeName);
+        console.log(anime)
         setAnimeDetail(anime);
         setLoading(false); 
     };

@@ -6,13 +6,13 @@ import CardAnimes from "../components/CardAnimes";
 import BannerHead from "../components/BannerHead";
 import useAnimeDetail from "../hooks/useAnimeDetail";
 import { IoIosArrowBack, IoIosArrowForward  } from "react-icons/io";
+import { genresAnime } from "../helpers/genresAnime";
 
 const EpisodeDetail = () => {
   const { animeName, episodeNumber } = useParams();
   const navigate = useNavigate();
   const {
     animeDetail,
-    genresAnime,
     randomAnimes,
     loading,
     loadingRandom,
@@ -177,23 +177,25 @@ const EpisodeDetail = () => {
         <BannerHead parrafe={"Género(s)"} />
         <div className="flex gap-1">
           {genres?.map((genre, i) => (
-            <p
+            <Link
+              to={`/search?genres=${genre.id}`}
               className="bg-primary text-sm p-1 rounded-lg"
               key={i}
             >
-              {genre}
-            </p>
+              {genre.genre}
+            </Link>
           ))}
         </div>
         <BannerHead parrafe={"Tags"} />
         <div className="flex gap-1 flex-wrap justify-center md:justify-start">
-          {genresAnime?.map((genre, i) => (
-            <p
+          {genresAnime?.map(genre => (
+            <Link
+            to={`/search?genres=${genre.id}`}
               className="bg-primary rounded-lg p-1 text-sm"
-              key={i}
+              key={genre.id}
             >
-              {genre}
-            </p>
+              {genre.name}
+            </Link>
           ))}
         </div>
       </section>
