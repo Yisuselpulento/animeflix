@@ -119,7 +119,7 @@ const fetchEpisodeAnime = async (id) => {
 export const fetchAnimesReview = async () => {
     try {
       const { data } = await axios.get("https://api.jikan.moe/v4/reviews/anime");
-      const animes = data.data.slice(0, 25).map(anime => ({
+      const animes = data.data.slice(0, 24).map(anime => ({
         _id: anime.entry.mal_id,
         name: anime.entry.title,
         image: anime.entry.images["jpg"].large_image_url,
