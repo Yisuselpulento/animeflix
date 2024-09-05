@@ -1,17 +1,5 @@
 import axios from "axios";
 
-export const fetchGenresAnime = async () => {
-  try {
-    const { data } = await axios.get("https://api.jikan.moe/v4/genres/anime");
-    const genres = data.data.map(genre => genre.name);
-    console.log(genres)
-    return { genres };
-  } catch (error) {
-    console.error("Error al obtener los géneros de anime:", error);
-    return { genres: [] };
-  }
-};
-
 export const fetchAnimeTop = async () => {
   try {
     const { data } = await axios.get("https://api.jikan.moe/v4/top/anime");

@@ -8,12 +8,12 @@ import { FaGithubAlt } from "react-icons/fa6";
 import CardAnimes from "../components/CardAnimes";
 import BannerHead from "../components/BannerHead";
 import useAnimeDetail from "../hooks/useAnimeDetail";
+import { genresAnime } from "../helpers/genresAnime";
 
 const AnimeDetail = () => {
   const { animeName } = useParams();
   const {
     animeDetail,
-    genresAnime,
     randomAnimes,
     loading,
     loadingRandom,
@@ -203,10 +203,10 @@ const AnimeDetail = () => {
       <section className="mt-5">
           <BannerHead parrafe={"Tags"} />
           <div className="flex gap-1 flex-wrap justify-center md:justify-start">
-            {genresAnime?.map((genre,i)=> (
+            {genresAnime?.map(genre=> (
               <p 
               className="bg-primary rounded-lg p-1 text-sm"
-              key={i}>{genre}</p>
+              key={genre.id}>{genre.name}</p>
             ) )}
 
           </div>

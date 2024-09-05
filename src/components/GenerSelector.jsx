@@ -1,8 +1,7 @@
-import useAnimeDetail from "../hooks/useAnimeDetail";
+import { genresAnime } from "../helpers/genresAnime";
 
 
 const GenreSelector = () => {
-   const { genresAnime} = useAnimeDetail()
 
   return (
     <div className="mb-4">
@@ -12,8 +11,8 @@ const GenreSelector = () => {
         multiple
         className="bg-slate-950 scrollbar scrollbar-thumb-primary p-2 rounded"
       >
-        {genresAnime?.map((genre,i) => (
-          <option key={i} value={genre}>{genre}</option>
+        {genresAnime?.map(genre => (
+          <option key={genre.id} value={genre}>{genre.name}</option>
         ))}
       </select>
     </div>
