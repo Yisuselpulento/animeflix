@@ -101,7 +101,7 @@ const EpisodeDetail = () => {
               <select
                 value={selectedEpisode}
                 onChange={handleSelectChange}
-                className="p-2  rounded bg-primary scrollbar scrollbar-thumb-orange-500"
+                className="p-2  rounded bg-primary scrollbar scrollbar-thumb-indigo-800"
               >
                 {episodes.map((ep) => (
                   <option key={ep.id} value={ep.id}>

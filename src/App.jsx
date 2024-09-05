@@ -6,6 +6,7 @@ import EpisodeDetail from './pages/EpisodeDetail';
 import NotFound from './pages/NotFound';
 import Layout from './Layout/Layout';
 import SearchResults from './pages/SearchResults';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="top-anime" element={<TopAnime />} />
           <Route path="ver/:animeName" element={<AnimeDetail />} />
           <Route path="ver/:animeName/:episodeNumber" element={<EpisodeDetail />} />
+          <Route path="register" element={<Register />} />
           <Route path="search" element={<SearchResults />} /> 
           <Route path="*" element={<NotFound />} />
         </Route>
