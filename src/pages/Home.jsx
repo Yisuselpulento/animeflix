@@ -2,6 +2,7 @@ import { useEffect,useState } from "react"
 import { fetchAnimesRecomend, fetchAnimesReview } from "../services/AnimeFetching"
 import CardAnimes from "../components/CardAnimes"
 import { FaFire } from "react-icons/fa";
+import GenreSelector from "../components/GenerSelector";
 
 const Home = () => {
   const [animesReview, setAnimesReview] = useState([])
@@ -11,7 +12,6 @@ const Home = () => {
 
     const getAnimeReview = async ()=> {
       const data = await fetchAnimesReview()
-     /*  console.log(data) */
       setAnimesReview(data.animes)
     }
 
@@ -23,7 +23,6 @@ const Home = () => {
 
     const getAnimeRecomend = async ()=> {
       const data = await fetchAnimesRecomend()
-      /* console.log(data) */
       setAnimesRecomend(data.animes)
     }
 
@@ -36,6 +35,7 @@ const Home = () => {
       <section className="flex flex-col items-center justify-center gap-5 text-center my-10">
         <h2 className="text-3xl font-bold">AnimeFlix - Ver Anime en Español</h2>
         <p className="text-gray-300">Bienvenido a la Mejor web de anime en Español, disfruta de miles de videos anime  online subtitulados al español puedes ver en linea o descargar en .mp4 actualizamos nuestros videos anime todos los dias con los videos anime de las ultimas temporadas.</p>
+        <GenreSelector />
       </section>
       <div className="flex gap-4 items-center bg-secundary py-4 px-3 rounded-r-lg w-full border-l-[3px] border-primary my-5">
         <FaFire className="text-primary text-2xl" />

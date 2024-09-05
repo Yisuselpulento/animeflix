@@ -57,33 +57,41 @@ export const fetchAnimeById = async (id) => {
 const fetchEpisodeAnime = async (id) => {
     try {
       const [{ data: videoData }, { data: episodeData }] = await Promise.all([
-        axios.get(`https://api.jikan.moe/v4/anime/${id}/videos/episodes`),
+        axios.get(`https://api.jikan.moe/v4/anime/${id}/videos`),
         axios.get(`https://api.jikan.moe/v4/anime/${id}/episodes`)
       ]);
-
-      const episodes = videoData.data.map((video, index) => ({
+      
+      const episodes = videoData.data.episodes.map((video, index) => ({
         episode: video.episode,
-        image: video.images.jpg,
+        image: video.images.jpg.image_url,
         title: video.title,
-        release: episodeData.data[index]?.aired || "Unknown release date" ,
+        release: episodeData.data[index]?.aired || "No hay datos de episodios" ,
         id: video.mal_id
-      }));
-  
+      }))
+      episodes.sort((a, b) => {
+        const episodeNumberA = parseInt(a.episode.match(/\d+/)[0]);
+        const episodeNumberB = parseInt(b.episode.match(/\d+/)[0]);
+        return episodeNumberA - episodeNumberB;
+      });
+      
+
       return episodes;
     } catch (error) {
-      console.error("Error fetching episode data:", error);
+      console.error("Error al obtener episodios de Anime:", error);
       return [];
     }
   };
 
-export const fetchGenresAnime = async ()=> {
-    const {data} = await axios.get("https://api.jikan.moe/v4/genres/anime")
-   /*  console.log(data.data) */
-    const genre =  data.data.map( genre => genre.name )
-    return {
-        genre
+  export const fetchGenresAnime = async () => {
+    try {
+      const { data } = await axios.get("https://api.jikan.moe/v4/genres/anime");
+      const genres = data.data.map(genre => genre.name);
+      return { genres };
+    } catch (error) {
+      console.error("Error al obtener los géneros de anime:", error);
+      return { genres: [] };
     }
-}
+  };
 
 export const fetchAnimesReview = async () => {
     const { data } = await axios.get("https://api.jikan.moe/v4/reviews/anime")
@@ -152,3 +160,34 @@ export const fetchCapituleDetail = async(idAnime, idCapitule) => {
     return data
 
 }
+
+export const fetchSearchAnimeByName = async (animeName, genre = []) => {
+  try {
+    const {data} = await axios.get('https://api.jikan.moe/v4/anime', {
+      params: {
+        q: animeName, 
+        genre,
+        limit: 10,  
+        page: 1     
+      }
+    });
+     const animes = data.data.map( anime => {
+      return { 
+          _id : anime.mal_id,
+          name: anime.title,
+          image : anime.images["jpg"].large_image_url,
+          score : anime.score
+      
+      }
+  })
+  console.log(animes)
+return {
+  animes,
+  pagination : data.pagination
+} 
+
+  } catch (error) {
+    console.error("Error al buscar el anime:", error);
+    return null;
+  }
+};

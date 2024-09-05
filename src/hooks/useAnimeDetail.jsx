@@ -19,6 +19,7 @@ const useAnimeDetail = (animeName) => {
     const getAnimeById = async () => {
       try {
         const anime = await fetchAnimeById(animeName);
+        console.log(anime)
         setAnimeDetail(anime);
       } catch (error) {
         console.error("Error fetching anime details:", error);
@@ -34,6 +35,7 @@ const useAnimeDetail = (animeName) => {
     const getGenresAnime = async () => {
       try {
         const genre = await fetchGenresAnime();
+        console.log(genre)
         setGenresAnime(genre.genre);
       } catch (error) {
         console.error("Error fetching genres:", error);

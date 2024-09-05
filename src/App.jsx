@@ -3,9 +3,9 @@ import Home from './pages/Home';
 import TopAnime from './pages/TopAnime';
 import AnimeDetail from './pages/AnimeDetail';
 import EpisodeDetail from './pages/EpisodeDetail';
-import Genre from './pages/Genre';
 import NotFound from './pages/NotFound';
 import Layout from './Layout/Layout';
+import SearchResults from './pages/SearchResults';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
           <Route path="top-anime" element={<TopAnime />} />
           <Route path="ver/:animeName" element={<AnimeDetail />} />
           <Route path="ver/:animeName/:episodeNumber" element={<EpisodeDetail />} />
-          <Route path="genero/:genreName/*" element={<Genre />} />
+          <Route path="search" element={<SearchResults />} /> 
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

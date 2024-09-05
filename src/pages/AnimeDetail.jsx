@@ -131,7 +131,7 @@ const AnimeDetail = () => {
           </div>
           <div className="flex flex-col gap-4  max-h-[600px] overflow-y-scroll scrollbar scrollbar-thumb-primary ">
           {episodes?.length > 0 ? (
-              episodes.map((epi, i) => (
+              episodes?.map((epi, i) => (
                 <div
                   key={i}
                   className="flex border-t-[1px] border-gray-700 p-2 justify-between"
@@ -143,7 +143,7 @@ const AnimeDetail = () => {
                       > 
                         <img
                           className="w-[130px] h-[75px] rounded-lg hover:scale-105 transition-all object-cover"
-                          src={epi.image?.image_url || image}
+                          src={epi?.image || image}
                           alt={`Imagen del episodio ${epi.title}`}
                         />
                       </Link>
