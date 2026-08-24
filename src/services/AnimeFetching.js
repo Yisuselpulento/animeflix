@@ -1,6 +1,9 @@
 import jikan from "./jikan";
+import { cached } from "./cache";
 
-export const fetchAnimeTop = async () => {
+const listValid = (v) => Array.isArray(v?.animes) && v.animes.length > 0;
+
+export const fetchAnimeTop = () => cached("top", async () => {
   try {
     const { data } = await jikan.get("/top/anime");
     const animes = data.data.slice(0, 10).map(anime => ({
@@ -15,25 +18,21 @@ export const fetchAnimeTop = async () => {
       studios: anime.studios.map(studio => studio.name),
       genres: anime.genres.map(genre => genre.name)
     }));
-
-    return {
-      animes,
-      pagination: data.pagination
-    };
+    return { animes, pagination: data.pagination };
   } catch (error) {
     console.error("Error al obtener el top anime:", error);
     return { animes: [], pagination: {} };
   }
-};
+}, { persist: true, isValid: listValid });
 
-export const fetchAnimeById = async (id) => {
+export const fetchAnimeById = (id) => cached(`anime:${id}`, async () => {
   try {
     const [animeResponse, episodes] = await Promise.all([
       jikan.get(`/anime/${id}/full`),
       fetchEpisodeAnime(id)
     ]);
     const animeData = animeResponse.data.data;
-    const anime = {
+    return {
       _id: animeData.mal_id,
       release: animeData.year,
       name: animeData.title,
@@ -44,19 +43,14 @@ export const fetchAnimeById = async (id) => {
       score: animeData.score,
       type: animeData.demographics.map(genre => genre.name),
       studios: animeData.studios.map(studio => studio.name),
-      genres: animeData.genres.map(genre => ({
-        genre: genre.name,
-        id: genre.mal_id
-      })),
+      genres: animeData.genres.map(genre => ({ genre: genre.name, id: genre.mal_id })),
       episodes
     };
-
-    return anime;
   } catch (error) {
     console.error("Error al obtener el anime por ID:", error);
     return null;
   }
-};
+}, { persist: true, isValid: (v) => v !== null });
 
 const fetchAnimesRandom = async () => {
   try {
@@ -73,39 +67,41 @@ const fetchAnimesRandom = async () => {
   }
 };
 
-export const fetchMultipleRandomAnimes = async (count = 4) => {
+// Cacheado en memoria (persist:false): se mantiene estable al navegar dentro de
+// la sesión y se renueva al recargar la página.
+export const fetchMultipleRandomAnimes = (count = 4) => cached("random", async () => {
   const promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(fetchAnimesRandom());
-  }
+  for (let i = 0; i < count; i++) promises.push(fetchAnimesRandom());
   const animes = await Promise.all(promises);
-  // Descartar los que fallaron (null) para no romper el render.
   return animes.filter(Boolean);
-};
+}, { isValid: (v) => Array.isArray(v) && v.length > 0 });
 
 const fetchEpisodeAnime = async (id) => {
   try {
-    const [{ data: videoData }, { data: episodeData }] = await Promise.all([
-      jikan.get(`/anime/${id}/videos`),
-      jikan.get(`/anime/${id}/episodes`)
+    const [episodeRes, videoRes] = await Promise.all([
+      jikan.get(`/anime/${id}/episodes`),
+      jikan.get(`/anime/${id}/videos`).catch(() => null)
     ]);
 
-    const videos = videoData?.data?.episodes ?? [];
-    const episodes = videos.map((video, index) => ({
-      episode: video.episode,
-      image: video.images?.jpg?.image_url,
-      title: video.title,
-      release: episodeData?.data?.[index]?.aired || "No hay datos de episodios",
-      id: video.mal_id
+    // Imágenes por episodio desde /videos (cuando existen).
+    const videos = videoRes?.data?.data?.episodes ?? [];
+    const imgByEp = {};
+    videos.forEach(v => {
+      const n = parseInt(String(v.episode ?? "").match(/\d+/)?.[0] ?? "", 10);
+      if (!Number.isNaN(n)) imgByEp[n] = v.images?.jpg?.image_url;
+    });
+
+    // Lista real de episodios desde /episodes (antes se usaba /videos, casi
+    // siempre vacío -> no aparecían episodios).
+    const list = episodeRes?.data?.data ?? [];
+    const episodes = list.map(ep => ({
+      episode: `Episodio ${ep.mal_id}`,
+      image: imgByEp[ep.mal_id],
+      title: ep.title,
+      release: ep.aired || "No hay datos de episodios",
+      id: ep.mal_id
     }));
-
-    // Orden por número de episodio, tolerante a títulos sin dígitos.
-    const epNum = (ep) => {
-      const match = String(ep.episode ?? "").match(/\d+/);
-      return match ? parseInt(match[0], 10) : 0;
-    };
-    episodes.sort((a, b) => epNum(a) - epNum(b));
-
+    episodes.sort((a, b) => a.id - b.id);
     return episodes;
   } catch (error) {
     console.error("Error al obtener episodios de Anime:", error);
@@ -113,9 +109,7 @@ const fetchEpisodeAnime = async (id) => {
   }
 };
 
-// Endpoints estables usados como fallback (Jikan devuelve 504 intermitente en
-// varios endpoints; estos son de los más fiables).
-export const fetchSeasonNow = async () => {
+export const fetchSeasonNow = () => cached("season_now", async () => {
   try {
     const { data } = await jikan.get("/seasons/now", { params: { limit: 24 } });
     const animes = data.data.slice(0, 24).map(anime => ({
@@ -129,9 +123,9 @@ export const fetchSeasonNow = async () => {
     console.error("Error al obtener la temporada actual:", error);
     return { animes: [], pagination: {} };
   }
-};
+}, { persist: true, isValid: listValid });
 
-const fetchTopAsCards = async () => {
+const fetchTopAsCards = () => cached("top_cards", async () => {
   try {
     const { data } = await jikan.get("/top/anime", { params: { limit: 24 } });
     const animes = data.data.slice(0, 24).map(anime => ({
@@ -145,9 +139,9 @@ const fetchTopAsCards = async () => {
     console.error("Error al obtener el top como cards:", error);
     return { animes: [], pagination: {} };
   }
-};
+}, { persist: true, isValid: listValid });
 
-export const fetchAnimesReview = async () => {
+export const fetchAnimesReview = () => cached("home_review", async () => {
   try {
     const { data } = await jikan.get("/reviews/anime");
     const animes = data.data.slice(0, 24).map(anime => ({
@@ -159,12 +153,11 @@ export const fetchAnimesReview = async () => {
     if (!animes.length) throw new Error("sin datos");
     return { animes, pagination: data.pagination };
   } catch (error) {
-    // Fallback: temporada actual (endpoint más estable)
-    return fetchSeasonNow();
+    return fetchSeasonNow(); // fallback estable
   }
-};
+}, { persist: true, isValid: listValid });
 
-export const fetchAnimesRecomend = async () => {
+export const fetchAnimesRecomend = () => cached("home_recomend", async () => {
   try {
     const { data } = await jikan.get("/recommendations/anime");
     const animes = data.data.slice(0, 25).map(anime => ({
@@ -176,33 +169,25 @@ export const fetchAnimesRecomend = async () => {
     if (!animes.length) throw new Error("sin datos");
     return { animes, pagination: data.pagination };
   } catch (error) {
-    // Fallback: top anime
-    return fetchTopAsCards();
+    return fetchTopAsCards(); // fallback estable
   }
-};
+}, { persist: true, isValid: listValid });
 
-export const fetchSearchAnimeByName = async (animeName, genres) => {
-  try {
-    const { data } = await jikan.get('/anime', {
-      params: {
-        q: animeName,
-        genres: genres.join(','),
-        limit: 10,
-        page: 1
-      }
-    });
-    const animes = data.data.map(anime => ({
-      _id: anime.mal_id,
-      name: anime.title,
-      image: anime.images?.jpg?.large_image_url,
-      score: anime.score
-    }));
-    return {
-      animes,
-      pagination: data.pagination
-    };
-  } catch (error) {
-    console.error("Error al buscar el anime:", error);
-    return null;
-  }
-};
+export const fetchSearchAnimeByName = (animeName, genres) =>
+  cached(`search:${animeName}:${genres.join(",")}`, async () => {
+    try {
+      const { data } = await jikan.get("/anime", {
+        params: { q: animeName, genres: genres.join(","), limit: 10, page: 1 }
+      });
+      const animes = data.data.map(anime => ({
+        _id: anime.mal_id,
+        name: anime.title,
+        image: anime.images?.jpg?.large_image_url,
+        score: anime.score
+      }));
+      return { animes, pagination: data.pagination };
+    } catch (error) {
+      console.error("Error al buscar el anime:", error);
+      return null;
+    }
+  }, { ttl: 10 * 60 * 1000, isValid: (v) => v !== null });
