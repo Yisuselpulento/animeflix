@@ -30,7 +30,7 @@ const CardTopAnime = ({anime, index}) => {
                 </div>
                 <div className="flex gap-3">
                     <p className="text-gray-300">Type:</p>
-                    <p>{type}</p>
+                    <p>{Array.isArray(type) ? type.join(', ') : type}</p>
                 </div>
                 <div className="flex gap-3">
                     <p className="text-gray-300">Score:</p>

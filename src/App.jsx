@@ -7,21 +7,26 @@ import NotFound from './pages/NotFound';
 import Layout from './Layout/Layout';
 import SearchResults from './pages/SearchResults';
 import Register from './pages/Register';
+import MyList from './pages/MyList';
+import { UserProvider } from './context/UserContext';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="top-anime" element={<TopAnime />} />
-          <Route path="ver/:animeName" element={<AnimeDetail />} />
-          <Route path="ver/:animeName/:episodeNumber" element={<EpisodeDetail />} />
-          <Route path="register" element={<Register />} />
-          <Route path="search" element={<SearchResults />} /> 
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
+      <UserProvider>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="top-anime" element={<TopAnime />} />
+            <Route path="ver/:animeName" element={<AnimeDetail />} />
+            <Route path="ver/:animeName/:episodeNumber" element={<EpisodeDetail />} />
+            <Route path="register" element={<Register />} />
+            <Route path="mi-lista" element={<MyList />} />
+            <Route path="search" element={<SearchResults />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </UserProvider>
     </Router>
   );
 }

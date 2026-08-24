@@ -50,7 +50,7 @@ const Home = () => {
         <>
           <div className="flex gap-4 items-center bg-secundary py-4 px-3 rounded-r-lg w-full border-l-[3px] border-primary my-5">
             <FaFire className="text-primary text-2xl" />
-            <p>Review Animes</p>
+            <p>Populares</p>
           </div>
           <section className="flex md:flex-row flex-col">
             <div  className="flex gap-5 flex-wrap items-center md:justify-start justify-center">

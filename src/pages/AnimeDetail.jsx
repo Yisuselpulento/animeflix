@@ -8,6 +8,7 @@ import { FaGithubAlt } from "react-icons/fa6";
 import CardAnimes from "../components/CardAnimes";
 import BannerHead from "../components/BannerHead";
 import useAnimeDetail from "../hooks/useAnimeDetail";
+import useUser from "../hooks/useUser";
 import { genresAnime } from "../helpers/genresAnime";
 
 const AnimeDetail = () => {
@@ -22,7 +23,10 @@ const AnimeDetail = () => {
     maxLength
   } = useAnimeDetail(animeName);
 
+  const { isFavorite, toggleFavorite, isInPlaylist, togglePlaylist } = useUser();
+
   const { bgImage, description, episodes, genres, image, name, release, score, studios, type, _id } = animeDetail || {};
+  const animeInfo = { _id, name, image, score };
 
   if (loading) {
     return (
@@ -101,16 +105,16 @@ const AnimeDetail = () => {
                 <p className="text-gray-300">{score}</p>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <button>
-                <FaHeart className="text-primary hover:text-opacity-80" />
+                <button onClick={() => toggleFavorite(animeInfo)} aria-label="Favorito">
+                  <FaHeart className={`text-2xl hover:text-opacity-80 transition-colors ${isFavorite(_id) ? "text-red-500" : "text-primary"}`} />
                 </button>
-                <p className="text-gray-300">0 Favorites</p>
+                <p className="text-gray-300">{isFavorite(_id) ? "En favoritos" : "Favorito"}</p>
               </div>
               <div className="flex flex-col items-center ">
-                <button>
-                <CgPlayListAdd className="text-primary text-3xl  hover:text-opacity-80" />
+                <button onClick={() => togglePlaylist(animeInfo)} aria-label="Playlist">
+                  <CgPlayListAdd className={`text-3xl hover:text-opacity-80 transition-colors ${isInPlaylist(_id) ? "text-green-500" : "text-primary"}`} />
                 </button>
-                <p className="text-gray-300">Add to playlist</p>
+                <p className="text-gray-300">{isInPlaylist(_id) ? "En tu lista" : "Add to playlist"}</p>
               </div>
             </div>
             <div>

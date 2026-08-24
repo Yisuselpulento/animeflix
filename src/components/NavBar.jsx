@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom"
 import SearchBar from "./SearchBar"
 import { BiLogIn } from "react-icons/bi";
+import { FaHeart } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import { useState } from "react";
+import useUser from "../hooks/useUser";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, favorites, logout } = useUser();
 
   const toggleNav = () => {
     setIsOpen(!isOpen);
@@ -40,15 +43,31 @@ const NavBar = () => {
                 Top 10
               </Link>
             </li>
-            <li>
-              <Link
-                className="py-2 bg-primary rounded hover:bg-opacity-70 text-sm font-bold flex gap-2 w-[150px] items-center justify-center"
-                to="/register"
-              >
-                <BiLogIn className="text-xl" />
-                Registrate
+            <li className="w-full flex">
+              <Link className="md:hover:text-primary w-full text-sm bg-primary hover:bg-opacity-85 md:bg-transparent p-3 rounded-l-lg md:p-0 flex items-center gap-1 md:justify-center" to="/mi-lista">
+                <FaHeart className="text-primary md:inline" />
+                Mi Lista {favorites.length > 0 && <span className="text-primary font-bold">({favorites.length})</span>}
               </Link>
             </li>
+            {user ? (
+              <li className="flex items-center gap-2">
+                <span className="text-sm">Hola, <b className="text-primary">{user.username}</b></span>
+                <button
+                  onClick={logout}
+                  className="py-2 px-3 bg-slate-700 rounded hover:bg-slate-600 text-sm font-bold"
+                >Salir</button>
+              </li>
+            ) : (
+              <li>
+                <Link
+                  className="py-2 bg-primary rounded hover:bg-opacity-70 text-sm font-bold flex gap-2 w-[150px] items-center justify-center"
+                  to="/register"
+                >
+                  <BiLogIn className="text-xl" />
+                  Registrate
+                </Link>
+              </li>
+            )}
           </ul>
 
       </nav>

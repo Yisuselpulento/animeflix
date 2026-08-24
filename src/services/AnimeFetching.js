@@ -113,6 +113,40 @@ const fetchEpisodeAnime = async (id) => {
   }
 };
 
+// Endpoints estables usados como fallback (Jikan devuelve 504 intermitente en
+// varios endpoints; estos son de los más fiables).
+export const fetchSeasonNow = async () => {
+  try {
+    const { data } = await jikan.get("/seasons/now", { params: { limit: 24 } });
+    const animes = data.data.slice(0, 24).map(anime => ({
+      _id: anime.mal_id,
+      name: anime.title,
+      image: anime.images?.jpg?.large_image_url || anime.images?.webp?.large_image_url,
+      score: anime.score || 0
+    }));
+    return { animes, pagination: data.pagination };
+  } catch (error) {
+    console.error("Error al obtener la temporada actual:", error);
+    return { animes: [], pagination: {} };
+  }
+};
+
+const fetchTopAsCards = async () => {
+  try {
+    const { data } = await jikan.get("/top/anime", { params: { limit: 24 } });
+    const animes = data.data.slice(0, 24).map(anime => ({
+      _id: anime.mal_id,
+      name: anime.title,
+      image: anime.images?.jpg?.large_image_url || anime.images?.webp?.large_image_url,
+      score: anime.score || 0
+    }));
+    return { animes, pagination: data.pagination };
+  } catch (error) {
+    console.error("Error al obtener el top como cards:", error);
+    return { animes: [], pagination: {} };
+  }
+};
+
 export const fetchAnimesReview = async () => {
   try {
     const { data } = await jikan.get("/reviews/anime");
@@ -122,14 +156,11 @@ export const fetchAnimesReview = async () => {
       image: anime.entry.images?.jpg?.large_image_url,
       score: anime.score
     }));
-
-    return {
-      animes,
-      pagination: data.pagination
-    };
+    if (!animes.length) throw new Error("sin datos");
+    return { animes, pagination: data.pagination };
   } catch (error) {
-    console.error("Error al obtener las reseñas de anime:", error);
-    return { animes: [], pagination: {} };
+    // Fallback: temporada actual (endpoint más estable)
+    return fetchSeasonNow();
   }
 };
 
@@ -142,14 +173,11 @@ export const fetchAnimesRecomend = async () => {
       image: anime.entry[0].images?.jpg?.large_image_url,
       score: anime.score || 0
     }));
-
-    return {
-      animes,
-      pagination: data.pagination
-    };
+    if (!animes.length) throw new Error("sin datos");
+    return { animes, pagination: data.pagination };
   } catch (error) {
-    console.error("Error al obtener los animes recomendados:", error);
-    return { animes: [], pagination: {} };
+    // Fallback: top anime
+    return fetchTopAsCards();
   }
 };
 
