@@ -34,14 +34,15 @@ const useAnimeSearch = () => {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    // Navigate with only the search query
-    navigate(`search?q=${query}`);
+    // Ruta absoluta (antes era relativa: fallaba desde /ver/:id) + query codificada
+    navigate(`/search?q=${encodeURIComponent(query)}`);
   };
 
   const handleGenreChange = (genres) => {
     setSelectedGenre(genres);
-    // Navigate with only the selected genres
-    navigate(`search?${genres.map(genre => `genres=${genre}`).join('&')}`);
+    const params = new URLSearchParams();
+    genres.forEach(genre => params.append('genres', genre));
+    navigate(`/search?${params.toString()}`);
   };
 
   return {

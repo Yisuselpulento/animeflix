@@ -17,10 +17,9 @@ const useAnimeDetail = (animeName) => {
   useEffect(() => {
     const getAnimeById = async () => {
       setLoading(true);
-        const anime = await fetchAnimeById(animeName);
-        console.log(anime)
-        setAnimeDetail(anime);
-        setLoading(false); 
+      const anime = await fetchAnimeById(animeName);
+      setAnimeDetail(anime);
+      setLoading(false);
     };
 
     getAnimeById();

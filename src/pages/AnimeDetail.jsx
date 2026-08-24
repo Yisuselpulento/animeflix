@@ -22,12 +22,21 @@ const AnimeDetail = () => {
     maxLength
   } = useAnimeDetail(animeName);
 
-  const { bgImage, description, episodes, genres, image, name, release, score, studios, type, _id } = animeDetail;
+  const { bgImage, description, episodes, genres, image, name, release, score, studios, type, _id } = animeDetail || {};
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Spinner />
+      </div>
+    );
+  }
+
+  if (!animeDetail) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[400px] gap-3">
+        <p className="text-xl">No se pudo cargar el anime.</p>
+        <Link className="text-primary hover:text-opacity-80" to="/">Volver al inicio</Link>
       </div>
     );
   }
@@ -85,7 +94,7 @@ const AnimeDetail = () => {
               </div>
               <div>
                 <p>Type</p>
-                <p className="text-gray-300">{type}</p>
+                <p className="text-gray-300">{type?.join(', ')}</p>
               </div>
               <div>
                 <p>Rating</p>

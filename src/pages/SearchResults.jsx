@@ -1,5 +1,4 @@
 import { useSearchParams } from 'react-router-dom';
-import {  useState } from 'react';
 import CardAnimes from '../components/CardAnimes';
 import { FaFire } from "react-icons/fa";
 import Spinner from '../components/Spinner';
@@ -7,10 +6,9 @@ import useAnimeSearch from '../hooks/useAnimeSearch';
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
-  const [selectedGenre, setSelectedGenre] = useState('');
-  const query = searchParams.get('q'); 
+  const query = searchParams.get('q');
 
-  const { results, loading } = useAnimeSearch(query, selectedGenre);
+  const { results, loading } = useAnimeSearch();
 
 
   return (

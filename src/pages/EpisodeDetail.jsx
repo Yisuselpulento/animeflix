@@ -23,7 +23,7 @@ const EpisodeDetail = () => {
 
   const [selectedEpisode, setSelectedEpisode] = useState(episodeNumber);
 
-  const { bgImage, description, genres, name, _id, episodes, trailer } = animeDetail;
+  const { bgImage, description, genres, name, _id, episodes = [], trailer } = animeDetail || {};
 
   useEffect(() => {
     setSelectedEpisode(episodeNumber);
@@ -33,6 +33,15 @@ const EpisodeDetail = () => {
     return (
       <div className="flex items-center justify-center">
         <Spinner />
+      </div>
+    );
+  }
+
+  if (!animeDetail) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[400px] gap-3">
+        <p className="text-xl">No se pudo cargar el episodio.</p>
+        <Link className="text-primary hover:text-opacity-80" to="/">Volver al inicio</Link>
       </div>
     );
   }
